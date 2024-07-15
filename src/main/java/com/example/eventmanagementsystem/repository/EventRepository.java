@@ -20,8 +20,6 @@ public interface EventRepository {
 
     void deleteEvent(int eventId);
 
-List<Sponsor> getEvent
-
-    Sponsors (int eventId);
+    List<Sponsor> getEventSponsors(int eventId);
 
 }
