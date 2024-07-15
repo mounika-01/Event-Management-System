@@ -3,7 +3,7 @@ package com.example.eventmanagementsystem.controller;
 import com.example.eventmanagementsystem.model.Sponsor;
 import com.example.eventmanagementsystem.model.Event;
 import com.example.eventmanagementsystem.service.SponsorJpaService;
-import org.spingframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
