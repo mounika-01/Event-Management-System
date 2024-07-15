@@ -14,8 +14,7 @@ public class Sponsor {
     private int sponsorId;
 
     @Column(name = "name")
-    private String sponsorname;
-
+  private String sponsorName;
     @Column(name = "industry")
     private String industry;
 
