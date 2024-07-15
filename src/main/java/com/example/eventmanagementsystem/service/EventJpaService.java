@@ -38,83 +38,68 @@ public class EventJpaService implements EventRepository {
         }
     }
 
-   public Event addEvent (Event event) {
-    
+   public Event addEvent (Event event) 
+   {
     List<Integer> sponsorIds = new ArrayList<>();
-    
-    for (Sponsor sponsor: event.getSponsors()) {
+    for (Sponsor sponsor: event.getSponsors())
+    {
         
         sponsorIds.add(sponsor.getSponsorId());
-
-}
-
-List<Sponsor> sponsors = sponsorJpaRepository.findAllById(sponsorIds); 
-event.setSponsors (sponsors);
-
-for (Sponsor sponsor: sponsors) { 
-    sponsor.getEvents().add(event);
-
-}
-
-Event savedEvent = eventJpaRepository.save(event);
-
-sponsor JpaRepository.saveAll(sponsors);
-
-return savedEvent;
+    }
+    
+    List<Sponsor> sponsors = sponsorJpaRepository.findAllById(sponsorIds); 
+    event.setSponsors (sponsors);
+    
+    for (Sponsor sponsor: sponsors) 
+    { 
+        sponsor.getEvents().add(event);
+    }
+    
+    Event savedEvent = eventJpaRepository.save(event);
+    sponsor JpaRepository.saveAll(sponsors);
+    return savedEvent;
    }
 
    public Event updateEvent(int eventId, Event event) {
+    try {
+        Event newEvent = eventJpaRepository.findById(eventId).get();
+        if (event.getEventName() != null) {
+            newEvent.setEventName(event.getEventName());
+        }
+        
+        if (event.getDate() != null) {
+            newEvent.setDate(event.getDate());
+        }
+        
+        if (event.getSponsors() != null) {
+            List<Sponsor> sponsors = newEvent.getSponsors();
+            for (Sponsor sponsor: sponsors) {
+                sponsor.getEvents().remove(newEvent);
+            }
+            
+            sponsorJpaRepository.saveAll(sponsors);
+            List<Integer> newSponsorIds = new ArrayList<>();
+            for (Sponsor sponsor: event.getSponsors()) {
+                newSponsor Ids.add(sponsor.getSponsorId());
+            }
+            List<Sponsor> newSponsors = sponsorJpaRepository.findAllById(newSponsorIds);
+            for (Sponsor sponsor: newSponsors) {
+                sponsor.getEvents().add(newEvent);
+            }
+            sponsorJpaRepository.saveAll(newSponsors);
+            newEvent.setSponsors(newSponsors);
+        }
+        return eventJpaRepository.save(newEvent);
+    }catch (Exception e){
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    }
 
-try {
-
-Event newEvent = eventJpaRepository.findById(eventId).get();
-
-if (event.getEventName() != null) {
-
-newEvent.setEventName(event.getEventName());
-
-}
-
-if (event.getDate() != null) {
-
-newEvent.setDate(event.getDate());
-
-}
-
-if (event.getSponsors() != null) {
-
-List<Sponsor> sponsors = newEvent.getSponsors();
-
-for (Sponsor sponsor: sponsors) {
-
-sponsor.getEvents().remove(newEvent);
-
-}
-
-sponsorJpaRepository.saveAll(sponsors);
-
-List<Integer> newSponsorIds = new ArrayList<>();
-
-for (Sponsor sponsor: event.getSponsors()) {
-
-newSponsor Ids.add(sponsor.getSponsorId());
-
-}
-
-List<Sponsor> newSponsors = sponsorJpaRepository.findAllById(newSponsorIds);
-
-for (Sponsor sponsor: newSponsors) {
-
-sponsor.getEvents().add(newEvent);
-}
-
-sponsorJpaRepository.saveAll(newSponsors);
-newEvent.setSponsors(newSponsors);
-}
-
-return eventJpaRepository.save(newEvent);
-}
-catch (Exception e){
-    throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-}
+    public List<Sponsor> getEventSponsors(int eventId) {
+        try{
+            Event event = eventJpaRepository.findById(eventId).get();
+            return event.getSponsors();
+        } catch(Exception e){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+    }
 }
