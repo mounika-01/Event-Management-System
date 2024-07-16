@@ -21,7 +21,7 @@ public class EventController {
         return eventJpaService.getEvents();
     }
 
-    @GetMapping("/events/{eventsId}")
+    @GetMapping("/events/{eventId}")
 
     public Event getEventById(@PathVariable("eventId") int eventId) {
         return eventJpaService.getEventById(eventId);
@@ -33,8 +33,7 @@ public class EventController {
         return eventJpaService.addEvent(event);
     }
 
-    @PutMapping("/events/{eventsId}")
-
+    @PutMapping("/events/{eventId}")
     public Event updateEvent(@PathVariable("eventId") int eventId, @RequestBody Event event) {
         return eventJpaService.updateEvent(eventId, event);
     }
