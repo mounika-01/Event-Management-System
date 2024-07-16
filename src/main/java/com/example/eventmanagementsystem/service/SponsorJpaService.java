@@ -109,6 +109,7 @@ public class SponsorJpaService implements SponsorRepository {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
+
     @Override
 
     public void deleteSponsor(int sponsorId) {
