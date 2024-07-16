@@ -10,14 +10,15 @@ import java.util.List;
 
 public interface SponsorRepository {
 
-ArrayList<Sponsor> getSponsors();
+    ArrayList<Sponsor> getSponsors();
 
-Sponsor getSponsorById(int sponsorId);
+    Sponsor getSponsorById(int sponsorId);
 
-Sponsor addSponsor(Sponsor sponsor);
+    Sponsor addSponsor(Sponsor sponsor);
 
-Sponsor updateSponsor(int sponsorId, Sponsor sponsor);
-void deleteSponsor(int sponsorId);
+    Sponsor updateSponsor(int sponsorId, Sponsor sponsor);
 
-List<Event> getSponsorEvents(int sponsorId);
+    void deleteSponsor(int sponsorId);
+
+    List<Event> getSponsorEvents(int sponsorId);
 }
