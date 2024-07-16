@@ -14,7 +14,7 @@ public class Sponsor {
     private int sponsorId;
 
     @Column(name = "name")
-  private String sponsorName;
+    private String sponsorName;
     @Column(name = "industry")
     private String industry;
 
@@ -50,7 +50,7 @@ public class Sponsor {
         this.industry = industry;
     }
 
-    public List<Event> getevents() {
+    public List<Event> getEvents() {
         return events;
     }
 
