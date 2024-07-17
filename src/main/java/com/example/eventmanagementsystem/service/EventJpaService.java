@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 
 @Service
@@ -23,13 +25,13 @@ public class EventJpaService implements EventRepository {
 
     public ArrayList<Event> getEvents() {
         List<Event> eventList = eventJpaRepository.findAll();
-        return new ArrayList<>(eventList);
+        ArrayList<Event> events = new ArrayList<>(eventList);
+        return events;
     }
 
     public Event getEventById(int eventId) {
         try {
-            Event event = eventJpaRepository.findById(eventId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            Event event = eventJpaRepository.findById(eventId).get();
             return event;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -51,13 +53,13 @@ public class EventJpaService implements EventRepository {
 
         Event savedEvent = eventJpaRepository.save(event);
         sponsorJpaRepository.saveAll(sponsors);
+
         return savedEvent;
     }
 
     public Event updateEvent(int eventId, Event event) {
         try {
-            Event newEvent = eventJpaRepository.findById(eventId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            Event newEvent = eventJpaRepository.findById(eventId).get();
             if (event.getEventName() != null) {
                 newEvent.setEventName(event.getEventName());
             }
@@ -90,13 +92,24 @@ public class EventJpaService implements EventRepository {
         }
     }
 
-    public List<Sponsor> getEventSponsors(int eventId) {
-        try {
-            Event event = eventJpaRepository.findById(eventId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-            return event.getSponsors();
-        } catch (Exception e) {
+    public void deleteEvent(int eventId) {
+        try{
+            Event event  = eventJpaRepository.findById(eventId).get();
+
+            List<Sponsor> sponsors = event.getSponsors();
+            for(Sponsor sponsor: sponsors) {
+                sponsor.getEvents().remove(event);
+            }
+
+            sponsorJpaRepository.saveAll(sponsors);
+
+            eventJpaRepository.deletetById(eventId);
+
+        }
+        catch(Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
+         throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+
     }
 }
