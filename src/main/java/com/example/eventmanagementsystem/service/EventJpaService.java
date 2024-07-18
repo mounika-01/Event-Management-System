@@ -93,23 +93,31 @@ public class EventJpaService implements EventRepository {
     }
 
     public void deleteEvent(int eventId) {
-        try{
-            Event event  = eventJpaRepository.findById(eventId).get();
+        try {
+            Event event = eventJpaRepository.findById(eventId).get();
 
             List<Sponsor> sponsors = event.getSponsors();
-            for(Sponsor sponsor: sponsors) {
+            for (Sponsor sponsor : sponsors) {
                 sponsor.getEvents().remove(event);
             }
 
             sponsorJpaRepository.saveAll(sponsors);
 
-            eventJpaRepository.deletetById(eventId);
+            eventJpaRepository.deleteById(eventId);
 
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
-         throw new ResponseStatusException(HttpStatus.NO_CONTENT);
+        throw new ResponseStatusException(HttpStatus.NO_CONTENT);
 
+    }
+
+    public List<Sponsor> getEventSponsors(int eventId) {
+        try {
+            Event event = eventJpaRepository.findById(eventId).get();
+            return event.getSponsors();
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 }
